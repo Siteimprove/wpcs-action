@@ -2,11 +2,11 @@
 
 cp /action/problem-matcher.json /github/workflow/problem-matcher.json
 
-git clone -b master https://github.com/WordPress/WordPress-Coding-Standards.git ~/wpcs
+git clone --depth 1 -b 2.3.0 https://github.com/WordPress/WordPress-Coding-Standards.git ~/wpcs
 
 if [ "${INPUT_STANDARD}" = "WordPress-VIP-Go" ] || [ "${INPUT_STANDARD}" = "WordPressVIPMinimum" ]; then
     echo "Setting up VIPCS"
-    git clone https://github.com/Automattic/VIP-Coding-Standards ${HOME}/vipcs
+    git clone --depth 1 -b 2.3.3 https://github.com/Automattic/VIP-Coding-Standards.git ${HOME}/vipcs
     git clone https://github.com/sirbrillig/phpcs-variable-analysis ${HOME}/variable-analysis
     ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/vipcs,${HOME}/variable-analysis"
 elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
@@ -16,7 +16,9 @@ elif [ "${INPUT_STANDARD}" = "10up-Default" ]; then
     git clone https://github.com/PHPCompatibility/PHPCompatibility ${HOME}/phpcompat
     git clone https://github.com/PHPCompatibility/PHPCompatibilityParagonie ${HOME}/phpcompat-paragonie
     git clone https://github.com/PHPCSStandards/PHPCSUtils ${HOME}/phpcsutils
-    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils"
+    git clone https://github.com/Automattic/VIP-Coding-Standards ${HOME}/vipcs
+    git clone https://github.com/sirbrillig/phpcs-variable-analysis ${HOME}/variable-analysis
+    ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths "${HOME}/wpcs,${HOME}/10up/10up-Default,${HOME}/phpcompatwp/PHPCompatibilityWP,${HOME}/phpcompat/PHPCompatibility,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieSodiumCompat,${HOME}/phpcompat-paragonie/PHPCompatibilityParagonieRandomCompat,${HOME}/phpcsutils/PHPCSUtils,${HOME}/vipcs,${HOME}/variable-analysis"
 elif [ -z "${INPUT_STANDARD_REPO}" ] || [ "${INPUT_STANDARD_REPO}" = "false" ]; then
     ${INPUT_PHPCS_BIN_PATH} --config-set installed_paths ~/wpcs
 else
@@ -46,7 +48,7 @@ fi
 # .phpcs.xml, phpcs.xml, .phpcs.xml.dist, phpcs.xml.dist
 if [ -f ".phpcs.xml" ] || [ -f "phpcs.xml" ] || [ -f ".phpcs.xml.dist" ] || [ -f "phpcs.xml.dist" ]; then
     HAS_CONFIG=true
-else 
+else
     HAS_CONFIG=false
 fi
 
